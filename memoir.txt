@@ -1,0 +1,13 @@
+the count for joined users doesn't work if is_join in joinlist is 0
+
+select al.*, userlist.nickname, CAST(COALESCE(sum(joinlist.is_join), 0) as signed) as total
+            from activitylist al
+            left join joinlist on al.act_id = joinlist.act_id
+            join userlist on userlist.user_id=al.maker_id
+            group by al.act_id;
+
+select al.act_id, al.title, userlist.nickname, COALESCE(sum(joinlist.is_join), 0)
+from activitylist al
+left join joinlist on al.act_id = joinlist.act_id
+join userlist on userlist.user_id=al.maker_id
+group by al.act_id;

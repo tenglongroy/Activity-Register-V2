@@ -1,0 +1,362 @@
+$mdc-theme-primary: #fcb8ab;
+$mdc-theme-primary: #3f51b5;
+$mdc-theme-primary: #6200ee;
+$mdc-theme-secondary: #feeae6;
+$mdc-theme-secondary: #b5a33f;
+$mdc-theme-secondary: #03dac6;
+$mdc-theme-on-primary: #442b2d;
+$mdc-theme-on-primary: #a33fb5;
+$mdc-theme-on-primary: #ffffff;
+$mdc-theme-on-secondary: #442b2d;
+$mdc-theme-on-secondary: #b53f51;
+$mdc-theme-on-secondary: #000000;
+
+$mdc-theme-surface: #ffffff;
+$mdc-theme-primary-bg: #ffffff;
+$mdc-theme-secondary-bg: #000000;
+
+$mdc-snackbar-mobile-breakpoint: 768px;
+
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/drawer/mdc-drawer";
+@import "@material/list/mdc-list";
+@import "@material/card/mdc-card";
+@import "@material/icon-button/mdc-icon-button";
+@import "@material/button/mdc-button";
+@import "@material/layout-grid/mdc-layout-grid";
+@import "@material/textfield/mdc-text-field";
+@import "@material/select/mdc-select";
+@import "@material/form-field/mdc-form-field";
+@import "@material/radio/mdc-radio";
+@import "@material/typography/mdc-typography";
+@import "@material/linear-progress/mdc-linear-progress";
+@import "@material/dialog/mdc-dialog";
+@import "@material/animation/variables";
+@import "@material/animation/functions";
+@import "@material/tab-bar/mdc-tab-bar";
+@import "@material/tab-scroller/mdc-tab-scroller";
+@import "@material/tab-indicator/mdc-tab-indicator";
+@import "@material/tab/mdc-tab";
+@import "@material/snackbar/mdc-snackbar";
+@import "@material/elevation/mdc-elevation";
+@import "@material/fab/mdc-fab";
+@import "@material/textfield/helper-text/mdc-text-field-helper-text";
+
+
+
+html, body{
+    font-size: 16px;
+}
+
+a, a:hover{
+    text-decoration: unset;
+    color: inherit;
+}
+
+.mdc-form-field{
+    margin-bottom: 10px;
+    width: 100%;
+}
+form .mdc-text-field,
+form .mdc-select{
+    width: 100%;
+}
+.mdc-select--focused .mdc-select__dropdown-icon{
+    transform: scale(180deg);
+}
+.mdc-form-field .mdc-radio + label{
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.drawer-main-content{
+    min-height: calc(100vh - 84px);
+    padding-bottom: 30px;
+}
+
+/** Login Sign up Dialog **/
+.login-sign-up-dialog form:not(.active){
+    display: none;
+}
+.login-sign-up-dialog form .mdc-dialog__content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid;
+}
+.login-sign-up-dialog form .mdc-text-field{
+    margin-top: 20px;
+}
+.login-sign-up-dialog form .login-dialog-message{
+    color: red;
+    margin-top: 10px;
+}
+/** End Login Sign up Dialog **/
+
+
+.mdc-dialog .mdc-dialog__title{
+    padding: 10px 10px 0px;
+    border-bottom: none;
+}
+.mdc-dialog .mdc-dialog__title::before{
+    display: none;
+}
+
+.mdc-dialog .loading-icon {
+    animation: mdc-animation-enter(/* $name: */ icon-rotation, /* $duration: */ 350ms);
+    display: none;
+}
+.mdc-dialog.adding .loading-icon{
+    display: block;
+}
+@keyframes icon-rotation{
+    from {
+            -webkit-transform: rotate(0deg);
+    }
+    to {
+            -webkit-transform: rotate(360deg);
+    }
+}
+
+
+.mdc-text-field--outlined-shaped{
+    @include mdc-text-field-outline-shape-radius(28px)
+}
+
+.preview-image{
+    width: 100%;
+    margin-top: 20px;
+}
+
+.progress-wrapper{
+    padding: 5px 8px;
+}
+.mdc-linear-progress{
+    height: 10px;
+    border-radius: 10px;
+}
+.mdc-linear-progress__buffering-dots{
+    background-position-y: center;
+}
+
+
+@media (min-width: $mdc-snackbar-mobile-breakpoint) {
+    .mdc-snackbar {
+        @include mdc-snackbar-viewport-margin($mdc-snackbar-viewport-margin-wide);
+    }
+}
+
+
+.header-actions-item .mdc-button{
+    z-index: 6;
+}
+
+/************ Activity Action Container ***********/
+.activity-action-container{
+    background-color: #fff;
+    padding: 10px 0;
+}
+.activity-action-container .container{
+    display: flex;
+}
+.activity-action-container .container .left-actions{
+    flex: 1 0 auto;
+}
+.activity-action-container .container .right-actions{
+    margin-right: 5%;
+}
+.activity-action-container .container .right-actions .view-toggle{
+    position: relative;
+    height: 100%;
+    border: 1px solid #ccc;
+}
+.activity-action-container .container .right-actions .view-toggle i{
+    width: auto;
+    min-width: unset;
+    height: 100%;
+    z-index: 5;
+    padding-top: 5px;
+    @include mdc-ripple-surface;
+    @include mdc-ripple-radius-bounded;
+    @include mdc-states;
+}
+.activity-action-container .container .right-actions .view-toggle span.moving-background{
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    box-shadow: inset 3px 3px 5px 1px #888;
+    transition: 0.3s all ease;
+}
+.activity-action-container .container .right-actions .view-toggle.list-on span.moving-background{
+    left: 50%;
+}
+.activity-action-container .container .right-actions > button{
+    display: none;
+}
+/************ End Activity Action Container ***********/
+
+
+/************ MDC card ***********/
+.activity-container.list-view-on .mdc-layout-grid__cell--span-4{
+    grid-column-start: 2;
+    grid-column-end: span 10;
+}
+.activity-container.list-view-on .mdc-card{
+    width: 100%;
+}
+
+.activity-container.list-view-on .mdc-card .mdc-card__primary-action{
+	flex-direction: row;
+}
+
+.activity-container.list-view-on .mdc-card .mdc-card__primary-action .mdc-card__media{
+    width: 120px;
+}
+
+.mdc-card .customised-card__primary{
+	padding: 0.5rem 1rem 0;
+}
+.mdc-card .customised-card__primary *{
+	margin: 0;
+}
+
+.customised-card__other-info{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+}
+
+.customised-card__other-info .mdc-typography--overline{
+    line-height: 1.25rem;
+    margin: 0;
+}
+.customised-card__other-info .creator-nickname{
+    text-decoration: underline;
+    padding: 0 5px;
+}
+
+.mdc-card .join-button-quit{
+    background-color: $mdc-theme-secondary;
+}
+
+.mdc-card .mdc-card__action-icons .mdc-icon-button:not(.favourite-button){
+    display: none;
+}
+/************ End MDC card ***********/
+
+
+
+
+/************ Modal ***********/
+.modal-body{
+    padding: 0;
+}
+.modal-body h3{
+    margin: 0;
+}
+/************ End Modal ***********/
+
+
+#uploadActivityImage{
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+#uploadActivityImage + label.uploadActivityImage-label {
+    z-index: 1;
+}
+  
+.uploadActivityImage-label.mdc-fab {
+    width: auto;
+    font-weight: bold;
+}
+.mdc-fab .material-icons {
+    margin-right: 8px;
+}
+
+
+/************ Footer ***********/
+footer{
+    background-color: #f1f3f4;
+    padding: 10px 30px;
+}
+
+.footer__navigation{
+    width: 50%;
+    /* float: left; */
+    display: inline-block;
+}
+.footer__navigation-list{
+    display: flex;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+    margin-bottom: 0;
+}
+.footer__navigation-list-item{
+    display: inline-block;
+    align-items: flex-start;
+    /* padding: 10px; */
+    margin: 0 10px;
+}
+.footer__navigation-list-item a{
+    padding: 5px;
+    display: block;
+}
+  
+.footer_signature{
+    width: 49%;
+    /* float: left; */
+    text-align: right;
+    display: inline-block;
+}
+.footer_signature p{
+    margin-bottom: 0;
+}
+/************ End Footer ***********/
+
+
+
+/************ Tooltip ***********/
+/************ Not working ***********/
+[data-mdc-tooltip]:before {
+    position: absolute;
+    background-color: #616161;
+    opacity: .9;
+    color: white;
+    height: 16px;
+    border-radius: 2px;
+    padding: 4px 8px;
+    font-weight: 400;
+    font-size: .75em;
+    font-family: 'Roboto';
+    margin-top: 22px;
+    content: attr(data-mdc-tooltip);
+    visibility: hidden;
+}
+[data-mdc-tooltip]:hover:before {
+    visibility: visible;
+    animation: .30s fadeIn;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    margin-top: 0px;
+    transform: scale(0.5)
+  }
+  100% {
+    opacity: .9;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-top: 22px;
+    transform: scale(1)
+  }
+}
+/************ Tooltip ***********/

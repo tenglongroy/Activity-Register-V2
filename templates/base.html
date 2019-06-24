@@ -4,52 +4,381 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
         <link href="{{ url_for('static', filename='css/bootstrap.css', _external=True )}}" rel="stylesheet">
-        <script src="{{ url_for('static', filename='js/jquery.js', _external=True )}}"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.js', _external=True )}}"></script>
-        {% block title %} <title>Activity Display</title> {% endblock %}
+        <link href="{{ url_for('static', filename='css/material-bundle.css', _external=True )}}" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        {% block title %} <title>Activity Register</title> {% endblock %}
+        <!-- for more icons -->
+        <script src="https://kit.fontawesome.com/e08ce03209.js"></script>
     </head>
 
     <body>
-    <script type="text/javascript">
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
-        <div class="container">
-            <!-- navbar -->
-            <nav class="navbar navbar-inverse container">
-            <div class="navbar-header"> <a class="navbar-brand" href="{{ url_for('show_activity_list') }}">Activity</a> </div>
-
-            <!-- account links -->
-            <ul class="nav navbar-nav pull-right">
-            {% if "logged_in" in session %}
-                <li><a class="btn" href="{{ url_for('show_user_profile', userID=session['user_id']) }}">
-                {{ user_info['nickname'] }}</a></li>   <!--放两行上下并列-->
-                <li><a class="btn" href="{{ url_for('logout') }}">logout</a></li>
-            {% else %}
-                <li><a class="btn" href="{{ url_for('login') }}">login</a></li>
-                <!-- <li><a class="btn" href="{{ url_for('user_register') }}">sign up</a></li> -->
-                <li><a class="btn" href="{{ url_for('justGoToRegister') }}">sign up</a></li>
-            {% endif %}
-            </ul>
-
-            </nav>
-
-            <!-- flash message -->
-            {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">close</span></button>
-                {{ message }}
+        <script type="text/javascript">
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            window.logged_in = "{{session["logged_in"]}}" == "True" ? true:false;
+        </script>
+        <header class="mdc-top-app-bar mdc-top-app-bar--fixed drawer-top-app-bar">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
+                    <span class="mdc-top-app-bar__title"><a href="/">Activity Register</a></span>
+                </section>
+                <section class="header-actions mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+                    {% if "logged_in" in session %}
+                        <a class="header-actions-item" href="{{ url_for('show_user_profile', userID=session['user_id']) }}" aria-label="Profile">
+                            <button class="mdc-button mdc-button--raised" id="profile-button">
+                                <i class="material-icons mdc-button__icon">person_outline</i>
+                                <span class="mdc-button__label">{{ user_info['nickname'] }}</span>
+                            </button>
+                        </a>
+                        <a class="header-actions-item" href="#" aria-label="Logout">
+                            <button class="mdc-button mdc-button--raised" id="logout-button">
+                                <i class="material-icons mdc-button__icon">portrait</i>
+                                <span class="mdc-button__label">Logout</span>
+                            </button>
+                        </a>
+                    {% else %}
+                        <a class="header-actions-item" href="#" aria-label="Login / Sign up">
+                            <button class="mdc-button mdc-button--raised" id="login-sign-up-button">
+                                <span class="mdc-button__label">Login / Sign up</span>
+                            </button>
+                        </a>
+                        <!-- <a class="header-actions-item" href="#" aria-label="Login">
+                            <button class="mdc-button mdc-button--raised" id="login-button">
+                                <i class="material-icons mdc-button__icon">exit_to_app</i>
+                                <span class="mdc-button__label">Login</span>
+                            </button>
+                        </a>
+                        <a class="header-actions-item" href="#" oldhref="{{ url_for('justGoToRegister') }}" aria-label="Sign up">
+                            <button class="mdc-button mdc-button--raised" id="sign-up-button">
+                                <i class="material-icons mdc-button__icon">person_add</i>
+                                <span class="mdc-button__label">Sign up</span>
+                            </button>
+                        </a> -->
+                    {% endif %}
+                </section>
             </div>
-            {% endfor %}
+        </header>
 
-            <!-- body block -->
-            {% block content %}
-            {% endblock %}
+        <div class="drawer-main-content" style="background-image: url( {{url_for('static', filename='img/default-background.jpg', _external=True ) }})">
+            <div class="mdc-top-app-bar--fixed-adjust">
+                <!-- flash message -->
+                <!-- {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">close</span></button>
+                    {{ message }}
+                </div>
+                {% endfor %} -->
 
+                <!-- body block -->
+                {% block content %}
+                {% endblock %}
+
+            </div>
         </div>
 
+        <footer>
+            <section class="footer__content">
+                <div class="footer__row">
+                    <a class="footer__logo-link">
+                        <div class="footer__logo"></div>
+                    </a>
+                    <div class="footer__description">
+                        <p>This is a revamp of my first Python Flask project, whose interface is rebuilt by applying <a href="https://material.io/">Material Design</a> style guideline and using its framework.</p>
+                    </div>
+                </div>
+                <div class="footer__row footer-links">
+                    <nav class="footer__navigation">
+                        <ul class="footer__navigation-list">
+                            <li class="footer__navigation-list-item">
+                                <a href="https://github.com/tenglongroy" target="_blank" class="footer-block__social-nav-link">
+                                Github
+                                </a>
+                            </li>
+                            <li class="footer__navigation-list-item">
+                                <a href="mailto:tenglongroy@gmail.com" target="_blank" class="footer-block__social-nav-link">
+                                Email
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="footer_signature">
+                        <p>Powered by <b>Roy Teng</b></p>
+                    </div>
+                </div>
+            </section>
+        </footer>
+
+
+        <!-- <div class="mdc-dialog login-dialog" role="alertdialog" aria-modal="true" aria-labelledby="login dialog" aria-describedby="login dialog">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <form class="login-form">
+                        <h2 class="mdc-dialog__title" id="my-dialog-title">Login</h2>
+                        <div class="mdc-dialog__content" id="my-dialog-content">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" name="username" class="username mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Username</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" name="password" class="password mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <p class="login-dialog-message mdc-typography--caption	"></p>
+                        </div>
+                        <footer class="mdc-dialog__actions mdc-dialog__footer">
+                            <button type="button" class="mdc-button mdc-button--outlined mdc-dialog__button mdc-dialog__footer__button mdc-dialog__footer__button--cancel" data-mdc-dialog-action="close">
+                            <span class="mdc-button__label">Cancel</span>
+                            </button>
+                            <button type="submit" class="mdc-button mdc-button--raised mdc-dialog__button mdc-dialog__footer__button mdc-dialog__footer__button--accept" id="login-submit" data-mdc-dialog-action="accept">
+                            <span class="mdc-button__label">Login</span>
+                            </button>
+                            <i class="material-icons loading-icon">hourglass_empty</i>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div> -->
+        
+
+        <!-- <div class="mdc-dialog sign-up-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sign up dialog" aria-describedby="sign up dialog">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <form class="sign-up-form">
+                        <h2 class="mdc-dialog__title" id="my-dialog-title">Sign up</h2>
+                        <div class="mdc-dialog__content" id="my-dialog-content">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" name="username" class="username mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Username</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="password" name="password" class="password mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="password" name="password_confirm" class="password_confirm mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password confirm</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" id="nickname" name="nickname" class="nickname mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Nickname</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <p class="sign-up-dialog-message mdc-typography--caption	"></p>
+                        </div>
+                        <footer class="mdc-dialog__actions">
+                            <button type="button" class="mdc-button mdc-button--outlined mdc-dialog__button" data-mdc-dialog-action="close">
+                            <span class="mdc-button__label">Cancel</span>
+                            </button>
+                            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" id="sign-up-submit" data-mdc-dialog-action="accept">
+                            <span class="mdc-button__label">Sign up</span>
+                            </button>
+                        </footer>
+                    </form>
+                    <div class="oauth-options">
+                        <span>Google</span><span>Facebook</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div> -->
+
+
+
+
+        <div class="mdc-dialog login-sign-up-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sign up dialog" aria-describedby="sign up dialog">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+                    <!-- <h2 class="mdc-dialog__title" id="my-dialog-title">Sign up</h2> -->
+                    <div class="mdc-dialog__title">
+                        <div class="mdc-tab-bar" role="tablist">
+                            <div class="mdc-tab-scroller">
+                                <div class="mdc-tab-scroller__scroll-area">
+                                <div class="mdc-tab-scroller__scroll-content">
+                                    <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab-target="#login-form">
+                                        <span class="mdc-tab__content">
+                                            <span class="mdc-tab__icon material-icons" aria-hidden="true">exit_to_app</span>
+                                            <span class="mdc-tab__text-label">Login</span>
+                                        </span>
+                                        <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                        </span>
+                                        <span class="mdc-tab__ripple"></span>
+                                    </button>
+                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab-target="#sign-up-form">
+                                        <span class="mdc-tab__content">
+                                            <span class="mdc-tab__icon material-icons" aria-hidden="true">person_add</span>
+                                            <span class="mdc-tab__text-label">Sign up</span>
+                                        </span>
+                                        <span class="mdc-tab-indicator">
+                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                        </span>
+                                        <span class="mdc-tab__ripple"></span>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="login-form active" id="login-form">
+                        <div class="mdc-dialog__content">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" name="username" class="username mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Username</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="password" name="password" class="password mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <p class="login-dialog-message mdc-typography--caption"></p>
+                        </div>
+                        <footer class="mdc-dialog__actions">
+                            <button type="button" class="mdc-button mdc-button--outlined mdc-dialog__button" data-mdc-dialog-action="close">
+                            <span class="mdc-button__label">Cancel</span>
+                            </button>
+                            <button type="submit" class="mdc-button mdc-button--raised mdc-dialog__button" id="login-submit" data-mdc-dialog-action="accept">
+                            <span class="mdc-button__label">Login</span>
+                            </button>
+                        </footer>
+                    </form>
+                    <form class="sign-up-form" id="sign-up-form">
+                        <div class="mdc-dialog__content">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" name="username" class="username mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Username</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="password" name="password" class="password mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field-helper-line">
+                                <div class="password-helper-text mdc-text-field-helper-text" aria-hidden="true">
+                                    Make sure it's at least 8 characters including a number and a lowercase letter. 
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="password" name="password_confirm" class="password_confirm mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Password confirm</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--outlined-shaped">
+                                <input type="text" id="nickname" name="nickname" class="nickname mdc-text-field__input">
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                    <label for="tf-outlined" class="mdc-floating-label">Nickname</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                            <p class="sign-up-dialog-message mdc-typography--caption"></p>
+                        </div>
+                        <footer class="mdc-dialog__actions">
+                            <button type="button" class="mdc-button mdc-button--outlined mdc-dialog__button" data-mdc-dialog-action="close">
+                            <span class="mdc-button__label">Cancel</span>
+                            </button>
+                            <button type="submit" class="mdc-button mdc-button--raised mdc-dialog__button" id="sign-up-submit" data-mdc-dialog-action="accept">
+                            <span class="mdc-button__label">Sign up</span>
+                            </button>
+                        </footer>
+                        <div class="oauth-options">
+                            <span>TODO - for future oAuth improvement</span>
+                            <span>Google</span><span>Facebook</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mdc-dialog__scrim"></div>
+        </div>
+
+
+
+        <div class="mdc-snackbar">
+            <div class="mdc-snackbar__surface">
+                <div class="mdc-snackbar__label"
+                    role="status"
+                    aria-live="polite">
+                    Error connecting server, please refresh or try again later.
+                </div>
+              <!-- <div class="mdc-snackbar__actions">
+                <button type="button" class="mdc-button mdc-snackbar__action">Retry</button>
+              </div> -->
+            </div>
+        </div>
+        
+        
+        <script src="{{ url_for('static', filename='js/jquery.js', _external=True )}}"></script>
+        <script src="{{ url_for('static', filename='js/material-bundle.js', _external=True )}}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.js', _external=True )}}"></script>
     </body>
 </html>

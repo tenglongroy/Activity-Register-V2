@@ -39,7 +39,7 @@ def parse_sql(filename):
 conn = pymysql.connect(host=DB_host,
         user=DB_username,
         passwd=DB_password,
-        charset='utf8')
+        charset='utf8mb4')
 stmts = parse_sql('test.sql')
 with conn.cursor() as cursor:
     for stmt in stmts:

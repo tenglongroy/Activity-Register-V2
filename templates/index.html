@@ -20,141 +20,244 @@ var user_act_flag = 0;
 <script>
 
 var act_list_js = {{ act_list | tojson | safe }};
-var join_list_js = {{ join_list | tojson | safe }};
-
-function myQuitFunction(from, indexxx = -1) {
-    if (confirm("Quit this activity?") == true) {
-        if(indexxx == -1)
-            post("{{ url_for('quit_activity') }}", {"quit": user_act_flag, "quit_activity": act_list_js['act_id'], "fromPage": from});
-        else
-            post("{{ url_for('quit_activity') }}", {"quit": join_list_js[indexxx]['transac_id'], "quit_activity": join_list_js[indexxx]['act_id'], "fromPage": from});
-    } else {
-        return false;
-    }
+if(act_list_js == null)
+    act_list_js = [];
+var join_list_js_new = {{ join_list_new | tojson | safe }};
+if(join_list_js_new == null){
+    join_list_js_new = [];
 }
-function myJoinFunction(nickname, indexxx = -1) {
-    var new_nickname = prompt("Nickname {% if not user_info %} (you can modify your participation after login){% endif %}", nickname);
-    //should do duplicate checking in case repeated names in the same activity, but too troublesome, maybe afterwards
-    if(new_nickname == false)
-        return false;
-    else if(new_nickname.length <= 1)
-        alert("nickname too short");
-    else if(new_nickname != null){
-        if(indexxx == -1)
-            post("{{ url_for('join_activity') }}", {"activity": act_list_js['act_id'], "nickname":new_nickname});
-        else
-            post("{{ url_for('join_activity') }}", {"activity": act_list_js[indexxx]['act_id'], "nickname":new_nickname});
-    }
+else{
+    join_list_js_new = join_list_js_new.map(function(item){
+        return item[0];
+    });
 }
-//http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
-function post(path, params) {
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    var form = document.createElement("form");
-    form.setAttribute("method", "POST");
-    form.setAttribute("action", path);
-
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
-         }
-    }
-    document.body.appendChild(form);
-    form.submit();
+var favourite_list = {{ favourite_list | tojson | safe }};
+if(favourite_list == null){
+    favourite_list = [];
 }
+else{
+    favourite_list = favourite_list.map(function(item){
+        return item[0];
+    });
+}
+
+// function myQuitFunction(from, indexxx = -1) {
+//     console.log('in myQuitFunction');
+//     if (confirm("Quit this activity?") == true) {
+//         if(indexxx == -1)
+//             post("{{ url_for('quit_activity') }}", {"quit": user_act_flag, "quit_activity": act_list_js['act_id'], "fromPage": from});
+//         else
+//             post("{{ url_for('quit_activity') }}", {"quit": join_list_js[indexxx]['transac_id'], "quit_activity": join_list_js[indexxx]['act_id'], "fromPage": from});
+//     } else {
+//         return false;
+//     }
+// }
+// function myJoinFunction(nickname, indexxx = -1) {
+//     console.log('in myJoinFunction');
+//     var new_nickname = prompt("Nickname {% if not user_info %} (you can modify your participation after login){% endif %}", nickname);
+//     //should do duplicate checking in case repeated names in the same activity, but too troublesome, maybe afterwards
+//     if(new_nickname == false)
+//         return false;
+//     else if(new_nickname.length <= 1)
+//         alert("nickname too short");
+//     else if(new_nickname != null){
+//         if(indexxx == -1)
+//             post("{{ url_for('join_activity') }}", {"activity": act_list_js['act_id'], "nickname":new_nickname});
+//         else
+//             post("{{ url_for('join_activity') }}", {"activity": act_list_js[indexxx]['act_id'], "nickname":new_nickname});
+//     }
+// }
+// //http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+// function post(path, params) {
+//     // The rest of this code assumes you are not using a library.
+//     // It can be made less wordy if you use one.
+//     var form = document.createElement("form");
+//     form.setAttribute("method", "POST");
+//     form.setAttribute("action", path);
+
+//     for(var key in params) {
+//         if(params.hasOwnProperty(key)) {
+//             var hiddenField = document.createElement("input");
+//             hiddenField.setAttribute("type", "hidden");
+//             hiddenField.setAttribute("name", key);
+//             hiddenField.setAttribute("value", params[key]);
+
+//             form.appendChild(hiddenField);
+//          }
+//     }
+//     document.body.appendChild(form);
+//     form.submit();
+// }
 </script>
 
-<table class="table table-hover">
-    <thead>
-        <th class="active">No</th>
-        <th class="active">描述</th>
-        <th class="active">人数</th>
-        <th class="active">开始时间</th>
-        <th class="active">创建者</th>
-        <th class="active">类型</th>
-        <th class="active">操作</th> 
-    </thead>
-    <tbody>
-        <!-- the HTML comment can't cover flask% -->
-        {% for index in range(act_list|length) %}
-            <!-- http://stackoverflow.com/questions/7323832/jquery-clickable-table-row-except-last-cell -->
-            <!-- http://stackoverflow.com/questions/1460958/html-table-row-like-a-link -->
-            {% if join_list != None and join_list[index] > 0 %}
-            <tr class="active">
-            {% else %}
-            <tr class="success" >
-            {% endif %}
-                <td>{{ index+1 }}</td>
-                <td onclick="document.location='/activity/'.concat({{ act_list[index]['act_id'] }})">{{ act_list[index]['title'] }}</td>
-                <td>{{ act_list[index]['current_number']}} / {{ act_list[index]['min_participant'] }}</td>
-                <td>{{ act_list[index]['start_time'] }}</td>
-                <td onclick="document.location='/user/'.concat({{ act_list[index]['maker_id'] }})">{{ act_list[index]['nickname'] }}</td>
-                <td>{{ act_list[index]['activity_type'] }}</td>
-                <td>
-                    {% if join_list != None and join_list[index] > 0 %}
-                        <button id="myQuit" class="btn btn-warning" role="button" onclick="return myQuitFunction('index', {{index}})">Quit</button>
-                    {% else %}
-                        <button id="myJoin" class="btn btn-success" role="button" onclick="myJoinFunction(origin_nickname, {{index}})">Join</button>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- here starts the main content -->
+<div class="activity-action-container mdc-elevation--z10">
+    <div class="container">
+        <div class="left-actions">
+            <button class="create-activity-button mdc-button mdc-button--raised" data-toggle="modal" data-target="#myModal">Create an activity</button>
+        </div>
+        <div class="right-actions">
+            <button id="grid-view-toggle" class="grid-row-button mdc-icon-button mdc-ripple-upgraded--unbounded mdc-icon-button--on" data-mdc-ripple-is-unbounded="true">
+                <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">grid_on</i>
+            </button>
+            <button id="list-view-toggle" class="grid-row-button mdc-icon-button mdc-ripple-upgraded--unbounded" data-mdc-ripple-is-unbounded="true">
+                <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">view_list</i>
+            </button>
+            <div class="view-toggle">
+                <i class="grid-toggle material-icons mdc-button">grid_on</i>
+                <i class="list-toggle material-icons mdc-button">view_list</i>
+                <span class="moving-background"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="mdc-layout-grid container">
+    <div class="mdc-layout-grid__inner activity-container">
+        <!-- cards go in here -->
+    </div>
+</div>
 
 
 <!-- ADD Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"> ADD </button>
+<!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"> ADD </button> -->
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade create-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog"> <div class="modal-content">
  
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="myModalLabel" align="center">add new activity</h4>
+            <h4 class="modal-title" id="myModalLabel" align="center">Add new activity</h4>
         </div>
  
         <div class="modal-body">
-            <div class="row">
-                <div class="col-md-4 col-md-offset-4">
- 
-                    <form class="form-horizontal"  action="{{ url_for('create_activity') }}" method="POST" >
-                        <div class="form-group">
-                            <label class="control-label inline", for='title'>title</label>
-                            <input type="text" class="form-control" name="title" id="title" required autofocus>
+            <div class="mdc-layout-grid">
+                <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
+                        <form class="form-horizontal"  action="{{ url_for('create_activity') }}" method="POST" id="create-activity-form" enctype = "multipart/form-data">
+                            <div class="form-group">
+                                <div class="mdc-text-field mdc-text-field--outlined">
+                                    <input class="mdc-text-field__input" type="text" name="title" id="title" required>
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Activity title</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <label class="control-label inline", for='min_participant'>minimun people</label>
-                            <input type="number" class="form-control" name="min_participant" id="min_participant" 
-                                min="0" max="30" required>
+                            <div class="form-group">
+                                <div class="mdc-text-field mdc-text-field--textarea">
+                                    <div class="mdc-text-field-character-counter">0 / 1024</div>
+                                    <textarea id="description" class="mdc-text-field__input" rows="2" cols="40" name="description" maxlength="1024"></textarea>
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                            <label for="description" class="mdc-floating-label">Description</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <label class="control-label inline", for='title'>start time</label>
-                            <input type="datetime-local" class="form-control" name="start_time" id="start_time" required>
+                            <div class="form-group">
+                                <div class="mdc-text-field mdc-text-field--outlined">
+                                    <input class="mdc-text-field__input" type="number" class="form-control" name="max_participant" id="max_participant" 
+                                    min="0" required>
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Maximum people</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <label class="control-label inline", for='activity_type'>activity type</label>
-                            <select name="activity_type" required>
-                                <option value="桌游">桌游</option>
-                                <option value="运动">Sports</option>
-                                <option value="户外">Outdoor</option>
-                                <option value="其他">Others</option>
-                            </select>
-                        </div>
- 
-                        <div class="form-group">
-                            <label>you join?</label>
-                            <label class="radio-inline"> <input type="radio" name="self_participate" value="1">YES</label>
-                            <label class="radio-inline"> <input type="radio" name="self_participate" value="0">NO</label>
-                        </div>
- 
-                        <button type="submit"  class ="btn btn-primary" >ADD</button>
-                        <input type="reset">
-                    </form> <!-- end form -->
- 
+                            <div class="form-group">
+                                <div class="mdc-text-field mdc-text-field--outlined">
+                                    <input class="mdc-text-field__input" type="number" class="form-control" name="min_participant" id="min_participant" 
+                                    min="0">
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Minimun people to start</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon">
+                                    <i class="material-icons mdc-text-field__icon">event</i>
+                                    <input class="mdc-text-field__input" type="datetime-local" name="start_time" id="start_time" required>
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Start time</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="mdc-select mdc-select--outlined">
+                                    <i class="mdc-select__dropdown-icon"></i>
+                                    <select class="mdc-select__native-control" name="activity_type" id="activity_type" required>
+                                        <option value=""></option>
+                                        <option value="board game">Board game</option>
+                                        <option value="Sports">Sports</option>
+                                        <option value="Outdoor">Outdoor</option>
+                                        <option value="Others">Other</option>
+                                    </select>
+                                    <div class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                            <label for="activity_type" class="mdc-floating-label mdc-floating-label--float-above">Activity type</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <h3 class="mdc-typography--subtitle1">Upload an image for this activity.<br>TODO -> drag and drop</h3>
+                                <input type="file" id="uploadActivityImage" multiple="" name="activityImage" size="30" accept=".gif,.jpg,.jpeg,.png,.bmp">
+                                <label class="uploadActivityImage-label mdc-fab mdc-fab--extended mdc-add-ripple" for="uploadActivityImage">
+                                    <i class="material-icons">cloud_upload</i>
+                                    <span class="mdc-fab__label">Choose a file</span>
+                                </label>
+                                <img class="preview-image mdc-elevation--z10" src="">
+                            </div>
+
+                            <h3 class="mdc-typography--subtitle1">Do you also join it?</h3>
+                            <div class="mdc-form-field">
+                                <div class="mdc-radio">
+                                    <input class="mdc-radio__native-control" type="radio" id="radio-yes" name="self-join-radio-set" value="1">
+                                    <div class="mdc-radio__background">
+                                        <div class="mdc-radio__outer-circle"></div>
+                                        <div class="mdc-radio__inner-circle"></div>
+                                    </div>
+                                </div>
+                                <label for="radio-yes">Yes</label>
+                                <div class="mdc-radio">
+                                    <input class="mdc-radio__native-control" type="radio" id="radio-no" name="self-join-radio-set" checked="" value="0">
+                                    <div class="mdc-radio__background">
+                                        <div class="mdc-radio__outer-circle"></div>
+                                        <div class="mdc-radio__inner-circle"></div>
+                                    </div>
+                                </div>
+                                <label for="radio-no">No</label>
+                            </div>
+    
+                            <button class="create-button mdc-button mdc-button--raised" type="button">Confirm</button>
+                        </form> <!-- end form -->
+                    </div>
                 </div>
             </div>
         </div> <!-- modal body -->

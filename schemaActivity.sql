@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS `activitylist` (
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `activity_type` varchar(128) NOT NULL DEFAULT 'board game',
   PRIMARY KEY (`act_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 insert into activitylist values(NULL, 1, '跨年狼人杀', 12, 3, '2016-12-31 19:00:00', NULL, 'board game'), (NULL, 2, 'Moore Park 打球', 8, 0, '2017-02-20 16:00:00', NULL, 'Sports');

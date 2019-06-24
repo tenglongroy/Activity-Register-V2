@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS `joinlist` (
   `nickname` varchar(48) NOT NULL,
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`transac_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 insert into joinlist values(NULL, 1, 1, 'Roy', NULL), (NULL, 1, NULL, 'wtf', NULL), (NULL, 1, 4, 'tenglong', NULL);

@@ -13,14 +13,25 @@ DataBase = 'activity_register'
 
 #check if username and password correct
 def check_auth(username, password):
-    sql = 'select user_id from userlist where username = "{0}" and password = "{1}"'.format(username, password)
+    sql = 'select user_id, nickname from userlist where username = "{0}" and password = "{1}"'.format(username, password)
     with g.db as cur:
         cur.execute(sql)
         result = cur.fetchall()
         if len(result) > 0:         #match, login successful
-            return result[0][0]     #user_id
+            return result     #user_id
         else:
-            return -1       #didn't find match
+            return None       #didn't find match
+
+#return the user information with username
+def get_user(username):
+    sql = 'select user_id, username, nickname, create_time from userlist where username = "{0}"'.format(username)
+    with g.db as cur:
+        cur.execute(sql)
+        result = cur.fetchall()
+        if len(result) > 0:         #match, login successful
+            return result     #user_id
+        else:
+            return None       #didn't find match
 
 #???
 #check if the curretn token expires or the account login from somewhere else and thus new token generated
@@ -124,8 +135,8 @@ def _initDB():
     conn = pymysql.connect(host=DB_host,
         user=DB_username,
         passwd=DB_password,
-        charset='utf8')
-    stmts = parse_sql('shemaINIT.sql')
+        charset='utf8mb4')
+    stmts = parse_sql('schemaINIT.sql')
     with conn.cursor() as cursor:
         for stmt in stmts:
             cursor.execute(stmt)

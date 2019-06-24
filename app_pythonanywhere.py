@@ -113,7 +113,7 @@ def connect_db():
         user=DB_username,
         passwd=DB_password,
         db=DataBase,
-        charset='utf8')
+        charset='utf8mb4')
 
 @app.before_request
 def before_request():
